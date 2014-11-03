@@ -648,8 +648,12 @@ Request.prototype.init = function (options) {
     }
     self.src = src
     if (isReadStream(src)) {
-      if (!self.hasHeader('content-type') && src.path) {
-        self.setHeader('content-type', mime.lookup(src.path))
+      if (!self.hasHeader('content-type')) {
+        if (src.path) {
+          self.setHeader('content-type', mime.lookup(src.path))
+        } else if (src.headers) {
+          self.setHeader('content-type', src.headers['content-type'])
+        }
       }
     } else {
       if (src.headers) {
